@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="O'zbek milliy taomlari va dunyo retseptlari" />
+  <meta name="theme-color" content="#C8410A" />
+  <title>Taomlar Retsepti</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-icon">🍽</div>
+        <div class="logo-text">
+          <span class="logo-main">Taomlar</span>
+          <span class="logo-sub">Retsepti</span>
+        </div>
+      </div>
+      <div class="header-controls">
+        <select id="langSelect" class="lang-select" aria-label="Language selector">
+          <option value="uz">🇺🇿 O'zbekcha</option>
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="en">🇬🇧 English</option>
+        </select>
+        <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN TABS ===== -->
+  <main class="app-main" role="main">
+
+    <!-- HOME TAB -->
+    <section id="tab-home" class="tab-section active" role="tabpanel" aria-label="Home">
+      <div class="search-hero">
+        <h1 class="search-title" data-i18n="searchTitle">Qaysi taomni qidirmoqchisiz?</h1>
+        <div class="search-bar-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            id="searchInput"
+            class="search-input"
+            type="search"
+            data-i18n-placeholder="searchPlaceholder"
+            placeholder="Taom nomi yoki mahsulotlar..."
+            autocomplete="off"
+            aria-label="Search recipes"
+          />
+          <button id="searchClear" class="search-clear" aria-label="Clear search" style="display:none">✕</button>
+        </div>
+        <div class="filter-row">
+          <select id="catFilter" class="filter-select" aria-label="Category filter">
+            <option value="">🍴 Barcha</option>
+            <option value="Nonushta" data-i18n-opt="Nonushta">Nonushta</option>
+            <option value="Tushlik" data-i18n-opt="Tushlik">Tushlik</option>
+            <option value="Kechki ovqat" data-i18n-opt="Kechki ovqat">Kechki ovqat</option>
+            <option value="Desert" data-i18n-opt="Desert">Desert</option>
+            <option value="Ichimlik" data-i18n-opt="Ichimlik">Ichimlik</option>
+          </select>
+          <select id="cuisineFilter" class="filter-select" aria-label="Cuisine filter">
+            <option value="">🌍 Barcha</option>
+            <option value="O'zbek">🇺🇿 O'zbek</option>
+            <option value="Italiya">🇮🇹 Italiya</option>
+            <option value="Xitoy">🇨🇳 Xitoy</option>
+            <option value="Hind">🇮🇳 Hind</option>
+            <option value="Turk">🇹🇷 Turk</option>
+            <option value="Yapon">🇯🇵 Yapon</option>
+            <option value="Koreys">🇰🇷 Koreys</option>
+            <option value="Meksika">🇲🇽 Meksika</option>
+            <option value="Yunoniston">🇬🇷 Yunoniston</option>
+            <option value="Fransiya">🇫🇷 Fransiya</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <span id="resultsCount" class="results-count"></span>
+      </div>
+
+      <div id="recipeGrid" class="recipe-grid" role="list" aria-label="Recipe cards"></div>
+      <div id="noResults" class="no-results" style="display:none">
+        <div class="no-results-emoji">🥺</div>
+        <p data-i18n="noResults">Retsept topilmadi</p>
+      </div>
+    </section>
+
+    <!-- SAVED TAB -->
+    <section id="tab-saved" class="tab-section" role="tabpanel" aria-label="Saved">
+      <div class="tab-header">
+        <h2 class="tab-title" data-i18n="savedTitle">Saqlangan retseptlar</h2>
+      </div>
+      <div id="savedGrid" class="recipe-grid" role="list" aria-label="Saved recipes"></div>
+      <div id="savedEmpty" class="no-results" style="display:none">
+        <div class="no-results-emoji">📌</div>
+        <p data-i18n="savedEmpty">Hech qanday saqlangan retsept yo'q</p>
+        <p class="hint" data-i18n="savedHint">Retsept modalida 🔖 tugmasini bosing</p>
+      </div>
+    </section>
+
+    <!-- PROFILE TAB -->
+    <section id="tab-profile" class="tab-section" role="tabpanel" aria-label="Profile">
+      <div class="tab-header">
+        <h2 class="tab-title" data-i18n="profileTitle">Mening profilim</h2>
+      </div>
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar">👨‍🍳</div>
+        <p class="profile-name" data-i18n="guestUser">Mehmon foydalanuvchi</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">👁️</div>
+          <div class="stat-value" id="statViewed">0</div>
+          <div class="stat-label" data-i18n="statViewed">Ko'rilgan retseptlar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔖</div>
+          <div class="stat-value" id="statSaved">0</div>
+          <div class="stat-label" data-i18n="statSaved">Saqlangan retseptlar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">❤️</div>
+          <div class="stat-value" id="statLiked">0</div>
+          <div class="stat-label" data-i18n="statLiked">Yoqtirgan retseptlar</div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button id="clearDataBtn" class="danger-btn">
+          <span>🗑️</span>
+          <span data-i18n="clearData">Barcha ma'lumotlarni tozalash</span>
+        </button>
+      </div>
+      <div class="app-info">
+        <p class="app-version">Taomlar Retsepti v1.0</p>
+        <p class="app-desc" data-i18n="appDesc">O'zbek taomlari va dunyo oshxonasi retseptlari</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== BOTTOM NAV ===== -->
+  <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+    <button class="nav-btn active" data-tab="home" aria-label="Home">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label" data-i18n="navHome">Asosiy</span>
+    </button>
+    <button class="nav-btn" data-tab="saved" aria-label="Saved">
+      <span class="nav-icon">🔖</span>
+      <span class="nav-label" data-i18n="navSaved">Saqlanganlar</span>
+    </button>
+    <button class="nav-btn" data-tab="profile" aria-label="Profile">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label" data-i18n="navProfile">Profil</span>
+    </button>
+  </nav>
+
+  <!-- ===== RECIPE MODAL ===== -->
+  <div id="recipeModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Recipe detail" style="display:none">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+
+      <div class="modal-image-wrap">
+        <img id="modalImage" src="" alt="" class="modal-image" onerror="this.onerror=null;this.style.display='none';document.getElementById('modalImgFallback').style.display='flex'" />
+        <div id="modalImgFallback" class="modal-img-fallback" style="display:none">
+          <span class="fallback-icon">🍽</span>
+          <span data-i18n="noImage">Taom rasmi yo'q</span>
+        </div>
+        <div class="modal-badges">
+          <span id="modalCategory" class="badge badge-cat"></span>
+          <span id="modalCuisine" class="badge badge-cuisine"></span>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <h2 id="modalTitle" class="modal-title"></h2>
+        <div class="modal-meta">
+          <span id="modalTime" class="meta-chip">⏱ 0 daqiqa</span>
+          <span id="modalRating" class="meta-chip">⭐ 0</span>
+        </div>
+
+        <!-- Ingredients -->
+        <div class="modal-section">
+          <h3 class="section-heading" data-i18n="ingredients">Ingredientlar</h3>
+          <ul id="modalIngredients" class="ingredients-list"></ul>
+        </div>
+
+        <!-- Steps -->
+        <div class="modal-section">
+          <h3 class="section-heading" data-i18n="steps">Tayyorlash bosqichlari</h3>
+          <ol id="modalSteps" class="steps-list"></ol>
+        </div>
+
+        <!-- Timer -->
+        <div class="modal-section timer-section">
+          <h3 class="section-heading" data-i18n="timer">Taymer</h3>
+          <div class="timer-wrap">
+            <div id="timerDisplay" class="timer-display">00:00</div>
+            <button id="timerStart" class="timer-btn" data-i18n="timerStart">▶ Boshlash</button>
+            <button id="timerStop" class="timer-btn timer-stop" data-i18n="timerStop" style="display:none">⏹ To'xtatish</button>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="modal-actions">
+          <button id="likeBtn" class="action-btn like-btn" aria-label="Like recipe">
+            <span id="likeIcon">🤍</span>
+            <span id="likeCount">0</span>
+          </button>
+          <button id="saveBtn" class="action-btn save-btn" aria-label="Save recipe">
+            <span id="saveIcon">🔖</span>
+            <span id="saveText" data-i18n="save">Saqlash</span>
+          </button>
+          <button id="shareBtn" class="action-btn share-btn" aria-label="Share recipe">
+            <span>📤</span>
+            <span data-i18n="share">Ulashish</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
